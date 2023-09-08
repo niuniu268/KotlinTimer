@@ -8,10 +8,23 @@ I use ViewModel to host the Model layer of MVI, and the overall structure is sim
 The Model layer hosts UI states and exposes a ViewState for the View to subscribe to. ViewState is a data class that contains all the page states.
 The View layer updates the ViewState through Actions, replacing the way MVVM interacts by calling ViewModel methods.
 
+# What is this demo?
 
-![Screenshot1](https://github.com/niuniu268/KotlinTimer/blob/master/img/Screenshot2.png?raw=true)
+1. Upon opening this model, users will encounter an animation:
+
 ![Screenshot1](https://github.com/niuniu268/KotlinTimer/blob/master/img/Screenshot3.png?raw=true)
+
+2. Within this module, you'll discover a clock and a calendar:
+
 ![Screenshot1](https://github.com/niuniu268/KotlinTimer/blob/master/img/Screenshot4.png?raw=true)
+
+3. When users rotate their screens, the switch also changes. It's worth noting that users can initiate screen rotation by clicking the switch.
+
 ![Screenshot1](https://github.com/niuniu268/KotlinTimer/blob/master/img/Screenshot5.png?raw=true)
+
+4. During screen rotation, a loading animation will appear:
+
+![Screenshot1](https://github.com/niuniu268/KotlinTimer/blob/master/img/Screenshot4.png?raw=true)
+
 
 
