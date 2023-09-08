@@ -8,7 +8,8 @@ enum class TimeMode {
 }
 data class UIState(
     var timeMode: TimeMode = TimeMode.PM,
-    var immersionShow:Boolean=false
+    var immersionShow:Boolean=false,
+    var loadingShow:Boolean=false
 )
 
 data class TimeState(

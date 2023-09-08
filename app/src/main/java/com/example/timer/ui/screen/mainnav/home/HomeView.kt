@@ -1,5 +1,7 @@
 package com.example.timer.ui.screen.mainnav.home
 
+import android.app.Activity
+import android.content.pm.ActivityInfo
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,25 +21,55 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.VerticalAlignmentLine
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.timer.config.Router
+import com.example.timer.ui.components.LoadingProgress
 import com.example.timer.ui.theme.TimerTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import java.nio.file.WatchEvent
 
 @Composable
 fun HomeView() {
-    val homeViewModel:HomeViewModel=viewModel()
+    val homeViewModel: HomeViewModel = viewModel()
     val timeState by homeViewModel.timeState.collectAsState()
     val uiState by homeViewModel.uiState.collectAsState()
     val dateState by homeViewModel.dateState.collectAsState()
+    val screenOrientation by rememberUpdatedState(
+        newValue = LocalConfiguration.current.orientation)
+    val activity = LocalContext.current as Activity
+    LaunchedEffect(screenOrientation){
+        if (screenOrientation==1){
+            homeViewModel.sendUIIntent(UIIntent.ChangeImmersionState(false))
 
+        }else{
+            homeViewModel.sendUIIntent(UIIntent.ChangeImmersionState(true))
+        }
+    }
+
+    LaunchedEffect( uiState.immersionShow ){
+        homeViewModel.sendUIIntent(UIIntent.LoadingImmersionState(true))
+        if (uiState.immersionShow){
+            activity.requestedOrientation=ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        }else{
+            activity.requestedOrientation=ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+        delay(300)
+        homeViewModel.sendUIIntent(UIIntent.LoadingImmersionState(false))
+    }
 
 
 
@@ -81,7 +113,10 @@ fun HomeView() {
 
 
                 }
-                Switch(checked = false, onCheckedChange = {})
+                Switch(checked = uiState.immersionShow,
+                    onCheckedChange = {
+                        homeViewModel.sendUIIntent(UIIntent.ChangeImmersionState(!uiState.immersionShow))
+                    })
             }
             Column (modifier = Modifier
                 .fillMaxSize()
@@ -103,6 +138,9 @@ fun HomeView() {
             }
 
         }
+        if (uiState.loadingShow){
+            LoadingProgress()
+        }
     }
 }
 @Composable
@@ -115,10 +153,10 @@ fun TimeTag(specific:Int){
     }
 
 }
-@Composable
-@Preview
-fun HomeViewPreview(){
-    TimerTheme{
-        HomeView()
-    }
-}
+//@Composable
+//@Preview
+//fun HomeViewPreview(){
+//    TimerTheme{
+//        HomeView()
+//    }
+//}

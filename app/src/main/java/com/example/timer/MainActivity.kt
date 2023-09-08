@@ -19,6 +19,8 @@ import com.example.timer.config.Router
 import com.example.timer.ui.screen.mainnav.MainNavView
 import com.example.timer.ui.screen.start.StartPageView
 import com.example.timer.ui.theme.TimerTheme
+import dagger.hilt.android.AndroidEntryPoint
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -2,14 +2,17 @@ package com.example.timer.ui.screen.mainnav.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import java.io.Closeable
+
 import java.time.LocalDateTime
 
-class HomeViewModel:ViewModel() {
+
+
+class HomeViewModel :ViewModel() {
     private var _dateState = MutableStateFlow(DateState())
     val dateState = _dateState
     private var _timeState = MutableStateFlow(TimeState())
@@ -19,6 +22,18 @@ class HomeViewModel:ViewModel() {
 
     init {
         initTime()
+    }
+    fun sendUIIntent(uiIntent: UIIntent){
+        when(uiIntent){
+            is UIIntent.ChangeImmersionState-> _uiState
+                .apply {
+                    value=value.copy(immersionShow = uiIntent.state)
+                }
+            is UIIntent.LoadingImmersionState->_uiState
+                .apply {
+                    value=value.copy(loadingShow = uiIntent.state)
+            }
+        }
     }
 
     private fun initTime() {
@@ -91,4 +106,8 @@ class HomeViewModel:ViewModel() {
         }
     }
 
+}
+sealed class UIIntent{
+    data class ChangeImmersionState(val state:Boolean):UIIntent()
+    data class LoadingImmersionState(val state:Boolean):UIIntent()
 }
